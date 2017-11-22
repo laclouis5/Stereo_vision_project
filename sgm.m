@@ -10,8 +10,8 @@ L4 = unaryTerms;
 T = alpha * toeplitz(0:nbUnary - 1);
 
 % left-right direction
-for i = 1:height
-    for j = 2:width
+for j = 2:width
+    for i = 1:height
         
         temp(:) = L1(i, j - 1, :);
         
@@ -21,8 +21,8 @@ for i = 1:height
 end
 
 % right-left direction
-for i = height:-1:1
-    for j = width - 1:-1:1
+for j = width - 1:-1:1
+    for i = height:-1:1
         
         temp(:) = L2(i, j + 1, :);
       
@@ -32,8 +32,8 @@ for i = height:-1:1
 end
 
 % up-down direction
-for i = 2:height
-    for j = 1:width
+for j = 1:width
+    for i = 2:height
         
         temp(:) = L3(i - 1, j, :);
         
@@ -43,8 +43,8 @@ for i = 2:height
 end
 
 % right-left direction
-for i = height - 1:-1:1
-    for j = width:-1:1
+for j = width:-1:1
+    for i = height - 1:-1:1
         
         temp(:) = L4(i + 1, j, :);
       
