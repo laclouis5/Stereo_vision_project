@@ -1,4 +1,4 @@
-function Is = shift_image_lr(Ie, shift)
+function Is = shift_image(Ie, shift)
 
     dimx = size(Ie, 2);
     

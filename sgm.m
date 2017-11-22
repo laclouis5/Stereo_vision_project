@@ -2,71 +2,56 @@ function [L] = sgm(unaryTerms, alpha)
 
 [height, width, nbUnary] = size(unaryTerms);
 
-L  = zeros(size(unaryTerms));
-L1 = zeros(size(unaryTerms));
-L2 = zeros(size(unaryTerms));
-L3 = zeros(size(unaryTerms));
-L4 = zeros(size(unaryTerms));
+L1 = unaryTerms;
+L2 = unaryTerms;
+L3 = unaryTerms;
+L4 = unaryTerms;
 
-L1(:, 1, :) = unaryTerms(:, 1, :);
+T = alpha * toeplitz(0:nbUnary - 1);
 
-for line = 1:height
-    
-    pairWiseTerms = computePairwiseTerms(unaryTerms, alpha, line, 'LR');
-    
-    for col = 2:width
-        for d = 1:nbUnary
-
-            tmp = min(L(line, col - 1, :) + pairWiseTerms(col, d, :));
-            L1(line, col, d) = unaryTerms(line, col, d) + tmp;
-        end
+% left-right direction
+for i = 1:height
+    for j = 2:width
+        
+        temp(:) = L1(i, j - 1, :);
+        
+        M(1, 1, :) = min(T + temp, [], 2);      
+        L1(i, j, :) = unaryTerms(i, j, :) + M;
     end
 end
 
-% L2(:, width, :) = unaryTerms(:, width, :);
-% 
-% for line = 1:height
-%     
-%     pairWiseTerms = computePairwiseTerms(unaryTerms, alpha, line, 'RL');
-%     
-%     for col = 2:width
-%         for d = 1:nbUnary
-%             
-%             tmp = min(L(line, width - col + 2, :) + pairWiseTerms(width - col + 1, d, :));
-%             L2(line, width - col + 1, d) = unaryTerms(line, width - col + 1, d) + tmp;
-%         end
-%     end
-% end
-% 
-% L3(1, :, :) = unaryTerms(1, :, :);
-% 
-% for col = 1:width
-%     
-%     pairWiseTerms = computePairwiseTerms(unaryTerms, alpha, col, 'UD');
-%     
-%     for line = 2:height
-%         for d = 1:nbUnary
-% 
-%             tmp = min(L(line - 1, col, :) + pairWiseTerms(line, d, :));
-%             L1(line, col, d) = unaryTerms(line, col, d) + tmp;
-%         end
-%     end
-% end
-% 
-% L4(height, :, :) = unaryTerms(height, :, :);
-% 
-% for col = 1:width
-%     
-%     pairWiseTerms = computePairwiseTerms(unaryTerms, alpha, col, 'UD');
-%     
-%     for line = 2:height
-%         for d = 1:nbUnary
-% 
-%             tmp = min(L(height - line + 2, col, :) + pairWiseTerms(height - line + 1, d, :));
-%             L1(height - line + 1, col, d) = unaryTerms(height - line + 1, col, d) + tmp;
-%         end
-%     end
-% end
+% right-left direction
+for i = height:-1:1
+    for j = width - 1:-1:1
+        
+        temp(:) = L2(i, j + 1, :);
+      
+        M(1, 1, :) = min(T + temp, [], 2);   
+        L2(i, j, :) = unaryTerms(i, j, :) + M;
+    end
+end
+
+% up-down direction
+for i = 2:height
+    for j = 1:width
+        
+        temp(:) = L3(i - 1, j, :);
+        
+        M(1, 1, :) = min(T + temp, [], 2);      
+        L3(i, j, :) = unaryTerms(i, j, :) + M;
+    end
+end
+
+% right-left direction
+for i = height - 1:-1:1
+    for j = width:-1:1
+        
+        temp(:) = L4(i + 1, j, :);
+      
+        M(1, 1, :) = min(T + temp, [], 2);   
+        L4(i, j, :) = unaryTerms(i, j, :) + M;
+    end
+end
 
 L = L1 + L2 + L3 + L4;
 

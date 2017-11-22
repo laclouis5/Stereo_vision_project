@@ -8,7 +8,7 @@ dbstop if error;
 % note : faire le calcul de la valeur absolue sur le maximun de données
 % possible
 
-alpha = 0.01;
+alpha = 0.1;
 % Charge les images
 
 I1 = imread('cones/im2.png');  %left image
@@ -31,7 +31,7 @@ drawnow;
 %% Calcul des "unary terms"
 maxs = 59;
 mins = 0;
-win_size = 10;
+win_size = 5;
 
 unaryTerms1 = computeUnaryTerms(I1, I2, mins, maxs, win_size);
 unaryTerms2 = computeUnaryTerms(I2, I1, mins, -maxs, win_size);
@@ -51,7 +51,7 @@ drawnow;
 
 %% Calcul de la carte de disparite par SGM 
 
-S1 = sgm2(unaryTerms1, alpha);
+S1 = sgm(unaryTerms1, alpha);
 [minHor1,ind1] = min(S1,[],3);
 
 D_SGM_1 = ind1 - 1 + mins;
@@ -59,9 +59,9 @@ D_SGM_1 = ind1 - 1 + mins;
 figure(4);
 subplot(1,2,1), imagesc(D_SGM_1); title('SGM on I1');
 
-% S2 = sgm(unaryTerms2, alpha);
-% [minHor2, ind2] = min(S2,[],3);
-% D_SGM_2 = -(ind2 - 1 + mins);
-% 
-% figure(4);
-% subplot(1,2,2), imagesc(-D_SGM_2); title('SGM on I2');
+S2 = sgm(unaryTerms2, alpha);
+[minHor2, ind2] = min(S2,[],3);
+D_SGM_2 = ind2 - 1 + mins;
+
+figure(4);
+subplot(1,2,2), imagesc(D_SGM_2); title('SGM on I2');

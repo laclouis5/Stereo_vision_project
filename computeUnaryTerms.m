@@ -14,7 +14,7 @@ function [unaryTerms] = computeUnaryTerms(i1, i2, mins, maxs, win_size)
 
     for i=mins:step:maxs
         
-        s = shift_image_lr(i2, i);  %-- shift image and derivs
+        s = shift_image(i2, i);  %-- shift image and derivs
 
         %--CSAD  is Cost from Sum of Absolute Differences
         diffs = sum(abs(i1 - s), 3); %-- get CSAD
