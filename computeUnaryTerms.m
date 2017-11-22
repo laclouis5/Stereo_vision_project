@@ -5,22 +5,21 @@ function [unaryTerms] = computeUnaryTerms(i1, i2, mins, maxs, win_size)
 % A square window of size (win_size,win_size) is used
 
     [dimy,dimx,~] = size(i1);
-
-    nbDisparity = abs(maxs - mins) + 1;
-
-    unaryTerms = zeros(dimy,dimx,nbDisparity);    %-- init outputs
+    nbDisparity   = abs(maxs - mins) + 1;
+    unaryTerms    = zeros(dimy,dimx,nbDisparity); %-- init outputs
 
     h = ones(win_size)/win_size.^2;  %-- averaging filter
 
     step = sign(maxs-mins);          %-- adjusts to reverse slide
 
     for i=mins:step:maxs
-        s  = shift_image_lr(i2, i);        %-- shift image and derivs
+        
+        s = shift_image_lr(i2, i);  %-- shift image and derivs
 
         %--CSAD  is Cost from Sum of Absolute Differences
-        diffs = sum(abs(i1 - s), 3);       %-- get CSAD
+        diffs = sum(abs(i1 - s), 3); %-- get CSAD
 
-        unaryTerms(:,:,abs(i-mins)+1)  = imfilter(diffs,h);
+        unaryTerms(:,:,abs(i-mins)+1) = imfilter(diffs,h);
 
     end
 
