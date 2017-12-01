@@ -19,7 +19,8 @@ function [unaryTerms] = computeUnaryTerms(i1, i2, mins, maxs, win_size)
         %--CSAD  is Cost from Sum of Absolute Differences
         diffs = sum(abs(i1 - s), 3); %-- get CSAD
 
-        unaryTerms(:,:,abs(i - mins) + 1) = imfilter(diffs, h);
+        unaryTerms(:,:,abs(i-mins)+1) = imfilter(diffs,h);
+
     end
 
 end
