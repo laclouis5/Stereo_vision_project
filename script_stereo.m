@@ -8,9 +8,6 @@ close all
 clc
 dbstop if error;
 
-% note : faire le calcul de la valeur absolue sur le maximum de données
-% possible
-
 alpha = 0.2;
 % Charge les images
 
@@ -31,23 +28,22 @@ I2 = double(I2)/255;
 figure(1);
 h1=subplot(1,2,1); imshow(I1); title('Left image I1');
 h2=subplot(1,2,2); imshow(I2); title('Right image I2');
-linkaxes([h1,h2]);
-drawnow;
+linkaxes([h1,h2]), drawnow;
 
 %% Calcul des "unary terms"
-maxs = 59;
+maxs = 79;
 mins = 0;
-win_size = 3;
+win_size = 5;
 
 unaryTerms1 = computeUnaryTerms(I1, I2, mins, maxs, win_size);
 unaryTerms2 = computeUnaryTerms(I2, I1, mins, -maxs, win_size);
 
 %% Optimisation Unary terms
-for k = 1:(maxs - mins + 1)
-    
-    unaryTerms1(:, :, k) = medfilt2(unaryTerms1(:, :, k), [7, 7]);
-    unaryTerms2(:, :, k) = medfilt2(unaryTerms2(:, :, k), [7, 7]);
-end
+% for k = 1:(maxs - mins + 1)
+%     
+%     unaryTerms1(:, :, k) = medfilt2(unaryTerms1(:, :, k), [7, 7]);
+%     unaryTerms2(:, :, k) = medfilt2(unaryTerms2(:, :, k), [7, 7]);
+% end
 
 %% Calcul brut de la carte de disparite
 [minUnaryTerms1,ind1] = min(unaryTerms1,[], 3);
@@ -66,30 +62,33 @@ drawnow;
 S1 = sgm(unaryTerms1, alpha);
 S2 = sgm(unaryTerms2, alpha);
 
-[minHor1,ind1] = min(S1,[],3);
+[minHor1, ind1] = min(S1,[],3);
 [minHor2, ind2] = min(S2,[],3);
 
 D_SGM_1 = ind1 - 1 + mins;
 D_SGM_2 = -(ind2 - 1 + mins);
 
 figure(4);
-subplot(1,2,1), imshow(D_SGM_1, [mins, maxs]); title('SGM on I1');
-subplot(1,2,2), imshow(-D_SGM_2, [mins, maxs]); title('SGM on I2');
+subplot(1,2,1), imshow(D_SGM_1, [mins, maxs]), title('SGM on I1');
+subplot(1,2,2), imshow(-D_SGM_2, [mins, maxs]), title('SGM on I2');
+
+%% Left-Right Consistency
+[R1, R2] = leftRightConsistency(D_SGM_1, D_SGM_2, 2);
+
+figure(5),
+subplot(1, 2, 1), imshow(R1, [min(min(R1)), max(max(R1))]), title('SGM on I1 with R-L consistency');
+subplot(1, 2, 2), imshow(-R2, [min(min(-R2)), max(max(-R2))]), title('SGM on I2 with R-L consistency');
 
 %% error quantification
 imTrue1 = (double(disp1) - min(min(double(disp1))))/max(max(double(disp1)));
 imTrue2 = (double(disp2) - min(min(double(disp2))))/max(max(double(disp2)));
 
-imSGM1  = (D_SGM_1 - min(min(D_SGM_1)))/max(max(D_SGM_1));
-imSGM2  = (-D_SGM_2 - min(min(-D_SGM_2)))/max(max(-D_SGM_2));
+imSGM1  = (R1 - min(min(R1)))/max(max(R1));
+imSGM2  = (-R2 - min(min(-R2)))/max(max(-R2));
 
 error1 = abs(imTrue1 - imSGM1);
 error2 = abs(imTrue2 - imSGM2);
 
-figure(5),
-imagesc(error1);
-
 figure(6),
-imagesc(error2);
-% subplot(1, 2, 1), imshow(error1, [min(min(error1)), max(max(error1))]);
-% subplot(1, 2, 2), imshow(error2, [min(min(error2)), max(max(error2))]);
+subplot(1, 2, 1), imagesc(error1), title('error between GT and SGM on image 1');
+subplot(1, 2, 2), imagesc(error2), title('error between GT and SGM on image 2');
