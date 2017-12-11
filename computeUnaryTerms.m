@@ -21,5 +21,4 @@ function [unaryTerms] = computeUnaryTerms(i1, i2, mins, maxs, win_size)
 
         unaryTerms(:,:,abs(i - mins) + 1) = imfilter(diffs, h);
     end
-
 end

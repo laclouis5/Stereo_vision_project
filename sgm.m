@@ -23,7 +23,7 @@ end
 
 % right-left direction
 for j = width - 1:-1:1
-    for i = height:-1:1
+    for i = 1:height
         
         temp(:) = L2(i, j + 1, :);
       
@@ -44,7 +44,7 @@ for j = 1:width
 end
 
 % right-left direction
-for j = width:-1:1
+for j = 1:width
     for i = height - 1:-1:1
         
         temp(:) = L4(i + 1, j, :);

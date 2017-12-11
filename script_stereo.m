@@ -2,6 +2,10 @@
 % Computer Vision Project
 % 2017
 
+% noter dans le rapport que les Unaryterms sont calculés comme la somme des
+% valeurs absolues des différences et non la différence des valeurs absolue
+% de la somme
+
 %%
 clear
 close all
@@ -13,7 +17,7 @@ alpha = 0.1;
 opt_size = 5;
 maxs = 60;
 mins = 0;
-win_size = 1;
+win_size = 3;
 census_size = 5;
 lr_const_thresh = 2;
 
@@ -91,8 +95,8 @@ subplot(1,2,2), imshow(-D_SGM_2, [mins, maxs]), title('SGM on I2');
 [R1, R2] = leftRightConsistency(D_SGM_1, D_SGM_2, lr_const_thresh);
 
 figure(5),
-subplot(1, 2, 1), imshow(R1, [min(min(R1)), max(max(R1))]), title('SGM on I1 with R-L consistency');
-subplot(1, 2, 2), imshow(-R2, [min(min(-R2)), max(max(-R2))]), title('SGM on I2 with R-L consistency');
+subplot(1, 2, 1), imshow(R1, [mins, maxs]), title('SGM on I1 with R-L consistency');
+subplot(1, 2, 2), imshow(-R2, [mins, maxs]), title('SGM on I2 with R-L consistency');
 
 %% error quantification
 imTrue1 = (double(disp1) - min(min(double(disp1))))/max(max(double(disp1)));
