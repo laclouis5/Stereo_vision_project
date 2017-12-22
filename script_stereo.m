@@ -15,19 +15,18 @@ dbstop if error;
 %% Param
 alpha = 0.1;
 opt_size = 5;
-maxs = 60;
+maxs = 74;
 mins = 0;
-win_size = 3;
-census_size = 5;
+win_size = 5;
+census_size = 3;
 lr_const_thresh = 2;
 
-
 %% Loading
-[I1, map1] = imread('cones/im2.png');  %left image
-[I2, map2] = imread('cones/im6.png');  %right image
+[I1, map1] = imread('/Users/laclouis5/Downloads/Dolls/view1.png');  %left image
+[I2, map2] = imread('/Users/laclouis5/Downloads/Dolls/view5.png');  %right image
 
-disp1 = imread('cones/disp2.png');
-disp2 = imread('cones/disp6.png');
+disp1 = double(imread('/Users/laclouis5/Downloads/Dolls/disp1.png'))/3;
+disp2 = double(imread('/Users/laclouis5/Downloads/Dolls/disp5.png'))/3;
 
 I1 = double(I1)/255;
 I2 = double(I2)/255;
@@ -42,13 +41,8 @@ h2=subplot(1,2,2); imshow(I2); title('Right image I2');
 linkaxes([h1,h2]), drawnow;
 
 %% Census Transform
-% CT1(:, :, 1) = censusTransform(I1(:, :, 1), census_size);
-% CT1(:, :, 2) = censusTransform(I1(:, :, 2), census_size);
-% CT1(:, :, 3) = censusTransform(I1(:, :, 3), census_size);
-% 
-% CT2(:, :, 1) = censusTransform(I2(:, :, 1), census_size);
-% CT2(:, :, 2) = censusTransform(I2(:, :, 2), census_size);
-% CT2(:, :, 3) = censusTransform(I2(:, :, 3), census_size);
+% CT1 = censusTransform(rgb2gray(I1), census_size);
+% CT2 = censusTransform(rgb2gray(I2), census_size);
 
 CT1 = I1;
 CT2 = I2;
@@ -58,11 +52,11 @@ unaryTerms1 = computeUnaryTerms(CT1, CT2, mins, maxs, win_size);
 unaryTerms2 = computeUnaryTerms(CT2, CT1, mins, -maxs, win_size);
 
 %% Optimisation of Unary terms
-for k = 1:(maxs - mins + 1)
-    
-    unaryTerms1(:, :, k) = medfilt2(unaryTerms1(:, :, k), [opt_size, opt_size]);
-    unaryTerms2(:, :, k) = medfilt2(unaryTerms2(:, :, k), [opt_size, opt_size]);
-end
+% for k = 1:(maxs - mins + 1)
+%     
+%     unaryTerms1(:, :, k) = medfilt2(unaryTerms1(:, :, k), [opt_size, opt_size]);
+%     unaryTerms2(:, :, k) = medfilt2(unaryTerms2(:, :, k), [opt_size, opt_size]);
+% end
 
 %% Calcul brut de la carte de disparite
 [minUnaryTerms1,ind1] = min(unaryTerms1,[], 3);
@@ -98,15 +92,12 @@ figure(5),
 subplot(1, 2, 1), imshow(R1, [mins, maxs]), title('SGM on I1 with R-L consistency');
 subplot(1, 2, 2), imshow(-R2, [mins, maxs]), title('SGM on I2 with R-L consistency');
 
-%% error quantification
-imTrue1 = (double(disp1) - min(min(double(disp1))))/max(max(double(disp1)));
-imTrue2 = (double(disp2) - min(min(double(disp2))))/max(max(double(disp2)));
+%% Error quantification with BAD 2.0
+error1 = abs(D_SGM_1 - disp1) > 2;
+error2 = abs(-D_SGM_2 - disp2) > 2;
 
-imSGM1  = (R1 - min(min(R1)))/max(max(R1));
-imSGM2  = (-R2 - min(min(-R2)))/max(max(-R2));
-
-error1 = abs(imTrue1 - imSGM1);
-error2 = abs(imTrue2 - imSGM2);
+nbErr1 = 100*length(find(error1 == 1))/numel(error1);
+nbErr2 = 100*length(find(error2 == 1))/numel(error2);
 
 figure(6),
 subplot(1, 2, 1), imagesc(error1), title('error between GT and SGM on image 1');
