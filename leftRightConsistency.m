@@ -13,12 +13,12 @@ function [rectifiedDispMap1, rectifiedDispMap2] = leftRightConsistency(dispMap1,
             diff1 = dispMap1(i, j) + dispMap2(i, pos1);
             diff2 = dispMap2(i, j) + dispMap1(i, pos2);
             
-            if diff1 > thresh
+            if abs(diff1) > thresh
                 rectifiedDispMap1(i, j) = NaN;
                 
             end
             
-            if diff2 > thresh
+            if abs(diff2) > thresh
                 rectifiedDispMap2(i, j) = NaN;  
                 
             end

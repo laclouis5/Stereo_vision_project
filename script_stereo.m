@@ -14,7 +14,7 @@ dbstop if error;
 
 %% Param
 alpha = 0.1;
-opt_size = 5;
+opt_size = 3;
 maxs = 74;
 mins = 0;
 win_size = 5;
@@ -22,11 +22,11 @@ census_size = 3;
 lr_const_thresh = 2;
 
 %% Loading
-[I1, map1] = imread('/Users/laclouis5/Downloads/Dolls/view1.png');  %left image
-[I2, map2] = imread('/Users/laclouis5/Downloads/Dolls/view5.png');  %right image
+[I1, map1] = imread('/Users/laclouis5/Downloads/Books/view1.png');  %left image
+[I2, map2] = imread('/Users/laclouis5/Downloads/Books/view5.png');  %right image
 
-disp1 = double(imread('/Users/laclouis5/Downloads/Dolls/disp1.png'))/3;
-disp2 = double(imread('/Users/laclouis5/Downloads/Dolls/disp5.png'))/3;
+disp1 = double(imread('/Users/laclouis5/Downloads/Books/disp1.png'))/3;
+disp2 = double(imread('/Users/laclouis5/Downloads/Books/disp5.png'))/3;
 
 I1 = double(I1)/255;
 I2 = double(I2)/255;
@@ -93,12 +93,12 @@ subplot(1, 2, 1), imshow(R1, [mins, maxs]), title('SGM on I1 with R-L consistenc
 subplot(1, 2, 2), imshow(-R2, [mins, maxs]), title('SGM on I2 with R-L consistency');
 
 %% Error quantification with BAD 2.0
-error1 = abs(D_SGM_1 - disp1) > 2;
+error1 = abs(D1 - disp1) > 2;
 error2 = abs(-D_SGM_2 - disp2) > 2;
 
 nbErr1 = 100*length(find(error1 == 1))/numel(error1);
 nbErr2 = 100*length(find(error2 == 1))/numel(error2);
 
 figure(6),
-subplot(1, 2, 1), imagesc(error1), title('error between GT and SGM on image 1');
-subplot(1, 2, 2), imagesc(error2), title('error between GT and SGM on image 2');
+subplot(1, 2, 1), imshow(~error1), title('error between GT and SGM on image 1');
+subplot(1, 2, 2), imshow(~error2), title('error between GT and SGM on image 2');
