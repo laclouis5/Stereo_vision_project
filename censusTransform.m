@@ -1,4 +1,4 @@
-function [imgOut] = censusTransform(imgIn, winSize)
+    function [imgOut] = censusTransform(imgIn, winSize)
 
     imgOut = imgIn;
     [h, w, ~] = size(imgIn);

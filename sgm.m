@@ -6,7 +6,6 @@ L1 = unaryTerms;
 L2 = unaryTerms;
 L3 = unaryTerms;
 L4 = unaryTerms;
-% L5 = unaryTerms;
 
 T = alpha * toeplitz(0:nbUnary - 1);
 
@@ -53,26 +52,6 @@ for j = 1:width
         L4(i, j, :) = unaryTerms(i, j, :) + M;
     end
 end
-
-% left-up to right-down corner direction
-
-% for d = (-height + 2):(width - 2)
-%     
-%     for k = 1:nbUnary
-%         
-%         D(:, k) = diag(unaryTerms(:, :, nbUnary), d);
-%     end
-%     
-%     sizeDiag = size(D, 1);
-%     
-%     for el = 2:sizeDiag
-%         
-%         temp = D(el);
-%         M(1, 1, :) = min(T + temp, [], 2);
-%         L5(el, j, :) = unaryTerms(i, j, :) + M;
-%         
-%     end
-% end
 
 L = L1 + L2 + L3 + L4;
 

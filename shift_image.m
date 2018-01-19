@@ -12,6 +12,5 @@ function Is = shift_image(Ie, shift)
     
     else
         Is = Ie;
-        
     end
 end
